@@ -32,14 +32,18 @@ public class MainActivity extends AppCompatActivity {
         getBtn = findViewById(R.id.get);
         tv = findViewById(R.id.tv);
 
+        //实例化viewmodel
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        //设置数据变更时的callback
         mViewModel.userList.observe(this, new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
+                //数据发生变化时将自动更新TextView
                 StringBuilder sb = new StringBuilder();
                 for(User u :users){
                     sb.append(" id").append(u.getId()).append(" name").append(u.getName()).append(" age").append(u.getAge()).append("\n");
                 }
+
                 tv.setText(sb.toString());
             }
         });

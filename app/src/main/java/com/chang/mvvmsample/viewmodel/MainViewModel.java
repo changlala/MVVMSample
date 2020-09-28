@@ -1,6 +1,10 @@
 package com.chang.mvvmsample.viewmodel;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.chang.mvvmsample.model.dao.UserDao;
+import com.chang.mvvmsample.model.database.AppDB;
 import com.chang.mvvmsample.model.entity.User;
 
 import java.util.List;
@@ -14,7 +18,7 @@ import androidx.lifecycle.ViewModel;
 
 public class MainViewModel extends ViewModel {
 
-    private UserDao mUserDao;
+    private UserDao mUserDao ;
 
     //可修改的LiveData
     private MutableLiveData<List<User>> _userList = new MutableLiveData<>();
@@ -24,17 +28,26 @@ public class MainViewModel extends ViewModel {
     //执行线程池 数据库的访问需要在子线程执行
     private ExecutorService mThreadPool = Executors.newSingleThreadExecutor();
 
+    //延迟到调用时初始化
+    private void isDaoInit(){
+        if(mUserDao == null)
+            mUserDao = AppDB.getInstance().getUserDao();
+    }
+
     public void getUserList() {
+        isDaoInit();
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
-                List<User> users = mUserDao.getAllUser();
-                _userList.setValue(users);
+                final List<User> users = mUserDao.getAllUser();
+                //在子线程更新LiveData需调用postValue
+                _userList.postValue(users);
             }
         });
     }
 
     public void inserUser(final User u, final Callback callback){
+        isDaoInit();
         mThreadPool.execute(new Runnable() {
             @Override
             public void run() {
@@ -47,7 +60,7 @@ public class MainViewModel extends ViewModel {
     }
 
     public interface Callback{
-
+        //insert完成回调
         void onInsertUserDone(long id);
     }
 }

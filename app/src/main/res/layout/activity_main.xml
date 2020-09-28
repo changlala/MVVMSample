@@ -12,11 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <androidx.appcompat.widget.AppCompatButton
+            android:text="insert"
             android:id="@+id/insert"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"/>
         <androidx.appcompat.widget.AppCompatButton
+            android:text="get All"
             android:id="@+id/get"
             android:layout_weight="1"
             android:layout_width="0dp"

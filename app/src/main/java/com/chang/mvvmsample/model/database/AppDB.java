@@ -24,4 +24,12 @@ public abstract class AppDB extends RoomDatabase {
         return mAppDB;
     }
 
+    public static AppDB getInstance() throws IllegalStateException{
+
+        if(mAppDB == null){
+            throw new IllegalStateException("database not initial yet");
+        }
+        return mAppDB;
+    }
+
 }
